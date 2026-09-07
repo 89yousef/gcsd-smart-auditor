@@ -57,6 +57,9 @@
   }
   .crumbs .sep{opacity:.5}
   .crumbs .now{color:var(--gold);font-weight:700}
+  .open-full{flex-shrink:0;font-size:.74rem;color:var(--text-dim);border:1px solid var(--border);border-radius:999px;padding:5px 12px;text-decoration:none;white-space:nowrap}
+  .open-full:hover{background:var(--surface-2);color:var(--text)}
+  @media(max-width:640px){ .open-full{order:4;width:100%;text-align:center} }
 
   /* ===== Views ===== */
   .view{display:none;animation:viewIn .35s ease}
@@ -226,6 +229,7 @@
 </style>
 </head>
 <body>
+<noscript><div style="background:#b0362c;color:#fff;padding:14px 20px;text-align:center;font-family:sans-serif">⚠️ هذه الصفحة تحتاج JavaScript مفعَّلاً ليعمل الجدول والتنقّل — This page requires JavaScript for the table and navigation to work.</div></noscript>
 
 <div class="topbar">
   <div class="topbar-inner">
@@ -234,6 +238,7 @@
       <div class="brand-name">Smart Auditor <span class="sub">مدقق ذكي · GCSD</span></div>
     </div>
     <div class="crumbs" id="crumbs"></div>
+    <a href="https://89yousef.github.io/gcsd-smart-auditor/" target="_blank" rel="noopener" class="open-full" title="فتح في نافذة كاملة إن واجهت أي مشكلة عرض هنا">↗ نافذة كاملة</a>
   </div>
 </div>
 
@@ -643,10 +648,23 @@
     apply();
   }
 
-  initWindow('30', DATA30);
-  initWindow('7', DATA7);
-  initWindow('1', DATA1);
-  goHome();
+  // ---- Defensive error visibility: never fail silently ----
+  function showFatalError(msg){
+    const bar = document.createElement('div');
+    bar.style.cssText = 'position:fixed;top:0;inset-inline:0;z-index:9999;background:#b0362c;color:#fff;padding:10px 16px;font-size:.85rem;text-align:center;font-family:sans-serif';
+    bar.textContent = '⚠️ حدث خطأ تقني في تحميل الصفحة، تواصل مع المالك — Technical error loading the page, contact the owner. (' + msg + ')';
+    document.body.prepend(bar);
+  }
+  window.addEventListener('error', e => showFatalError(e.message || 'unknown'));
+
+  try {
+    initWindow('30', DATA30);
+    initWindow('7', DATA7);
+    initWindow('1', DATA1);
+    goHome();
+  } catch (e) {
+    showFatalError(e.message);
+  }
 </script>
 </body>
 </html>
