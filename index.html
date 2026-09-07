@@ -43,7 +43,7 @@
   .topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
   .topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;max-width:1080px;margin:0 auto}
   .brand{display:flex;align-items:center;gap:10px;cursor:pointer}
-  .brand-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--navy),var(--navy-ink));display:flex;align-items:center;justify-content:center;color:var(--gold-bright);font-family:'Cairo';font-weight:900;font-size:1.1rem;box-shadow:var(--shadow);flex-shrink:0}
+  .brand-mark{width:44px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--navy),var(--navy-ink));display:flex;align-items:center;justify-content:center;color:var(--gold-bright);font-family:'Cairo';font-weight:900;font-size:.62rem;letter-spacing:.02em;box-shadow:var(--shadow);flex-shrink:0}
   .brand-name{font-family:'Cairo';font-weight:800;font-size:1rem;line-height:1.2}
   .brand-name .sub{display:block;font-size:.68rem;font-weight:500;color:var(--text-dim)}
   .crumbs{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--text-dim)}
@@ -66,7 +66,7 @@
   }
   .hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 85% 20%, rgba(224,181,102,.14) 0, transparent 45%);pointer-events:none}
   .hero-inner{max-width:1080px;margin:0 auto;position:relative}
-  .hero-mark{width:76px;height:76px;border-radius:20px;background:linear-gradient(135deg,var(--gold-bright),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Cairo';font-weight:900;font-size:1.9rem;color:var(--navy-ink);box-shadow:0 12px 30px -8px rgba(0,0,0,.4);margin-bottom:18px}
+  .hero-mark{width:90px;height:76px;border-radius:20px;background:linear-gradient(135deg,var(--gold-bright),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Cairo';font-weight:900;font-size:1.15rem;letter-spacing:.02em;color:var(--navy-ink);box-shadow:0 12px 30px -8px rgba(0,0,0,.4);margin-bottom:18px}
   .hero h1{font-size:1.9rem;font-weight:800;margin:0 0 4px;text-wrap:balance}
   .hero h1 .en{display:block;font-size:.6em;font-weight:600;color:rgba(255,255,255,.65);margin-top:4px}
   .hero p.tagline{margin:10px 0 0;font-size:1rem;opacity:.92;max-width:62ch}
@@ -221,7 +221,7 @@
 <div class="topbar">
   <div class="topbar-inner">
     <div class="brand" onclick="goHome()">
-      <div class="brand-mark">GC</div>
+      <div class="brand-mark">GCSD</div>
       <div class="brand-name">Smart Auditor <span class="sub">مدقق ذكي · GCSD</span></div>
     </div>
     <div class="crumbs" id="crumbs"></div>
@@ -232,7 +232,7 @@
 <div class="view active" id="view-home">
   <div class="hero">
     <div class="hero-inner">
-      <div class="hero-mark">GC</div>
+      <div class="hero-mark">GCSD</div>
       <h1>أهلاً بك في المدقق الذكي<span class="en">Welcome to Smart Auditor</span></h1>
       <p class="tagline">لوحة موحَّدة لفريق العمل تتابع أداء كل قسم بأرقام حقيقية من Zoho Books، لحظة بلحظة.<span class="en">A unified team dashboard tracking every department's performance with real Zoho Books data, always up to date.</span></p>
 
