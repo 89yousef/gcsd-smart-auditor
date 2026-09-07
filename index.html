@@ -356,9 +356,9 @@
             <input type="text" id="search-30" placeholder="ابحث عن صنف أو SKU... / Search item or SKU...">
             <span class="ic">🔍</span>
           </div>
-          <button class="filter-chip active" data-filter="all">الكل · All</button>
-          <button class="filter-chip" data-filter="high">خسارة كبيرة (&gt;500) · High</button>
-          <button class="filter-chip" data-filter="mid">متوسطة (100-500) · Mid</button>
+          <button class="filter-chip active" data-filter="all" data-scope="30">الكل · All</button>
+          <button class="filter-chip" data-filter="high" data-scope="30">خسارة كبيرة (&gt;500) · High</button>
+          <button class="filter-chip" data-filter="mid" data-scope="30">متوسطة (100-500) · Mid</button>
           <span class="row-count" id="row-count-30">41 صف</span>
         </div>
         <div class="table-wrap">
@@ -378,9 +378,43 @@
 
     <!-- ---- 7 DAY WINDOW ---- -->
     <div class="win-panel" id="win-d7">
-      <div class="empty-state">
-        ⏳ لم يُولَّد بعد لهذه النافذة الزمنية — سيُحدَّث في أول طلب تحديث يدوي قادم.
-        <span class="en">Not generated yet for this window — will populate on the next manual update request.</span>
+      <div class="kpi-row">
+        <div class="kpi"><div class="label">أصناف بخسارة<span class="en">Loss items</span></div><div class="value" id="kpi7-count">10</div></div>
+        <div class="kpi"><div class="label">إجمالي الخسارة<span class="en">Total loss</span></div><div class="value" id="kpi7-total">-1,515.76 ر.س</div></div>
+        <div class="kpi"><div class="label">وحدات مباعة بخسارة<span class="en">Units at loss</span></div><div class="value" id="kpi7-qty">41</div></div>
+        <div class="kpi"><div class="label">أكبر خسارة فردية<span class="en">Biggest single loss</span></div><div class="value" style="font-size:.88rem" id="kpi7-top">-651.25 ر.س (43%)</div></div>
+      </div>
+      <p style="font-size:.8rem;color:var(--text-dim)">النطاق: 01/09/2026 → 07/09/2026 · <span class="en">Range: 2026-09-01 → 2026-09-07</span></p>
+
+      <div class="card">
+        <h2>أعلى أصناف خسارة<span class="en">Top loss items</span></h2>
+        <div class="bars" id="bars-7"></div>
+      </div>
+
+      <div class="card">
+        <h2>الجدول الكامل — 10 أصناف<span class="en">Full table — 10 items</span></h2>
+        <div class="table-toolbar">
+          <div class="search-box">
+            <input type="text" id="search-7" placeholder="ابحث عن صنف أو SKU... / Search item or SKU...">
+            <span class="ic">🔍</span>
+          </div>
+          <button class="filter-chip active" data-filter="all" data-scope="7">الكل · All</button>
+          <button class="filter-chip" data-filter="high" data-scope="7">خسارة كبيرة (&gt;500) · High</button>
+          <button class="filter-chip" data-filter="mid" data-scope="7">متوسطة (100-500) · Mid</button>
+          <span class="row-count" id="row-count-7">10 صف</span>
+        </div>
+        <div class="table-wrap">
+          <table id="table-7">
+            <thead><tr>
+              <th data-key="name" data-type="str">الصنف<span class="en">Item</span><span class="sort-ic">↕</span></th>
+              <th data-key="margin" data-type="num">الهامش<span class="en">Margin</span><span class="sort-ic">↕</span></th>
+              <th data-key="qty" data-type="num">الكمية<span class="en">Qty</span><span class="sort-ic">↕</span></th>
+              <th data-key="sales" data-type="num">إجمالي المبيعات<span class="en">Total Sales</span><span class="sort-ic">↕</span></th>
+              <th data-key="loss" data-type="num">الخسارة<span class="en">Loss</span><span class="sort-ic">↕</span></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -443,6 +477,20 @@
     ["GRP2612G","0%",10,1565.60,-0.02],
   ];
 
+  // Real Zoho Profit By Item data, range 01/09/2026 - 07/09/2026
+  const DATA7 = [
+    ["GWN7660E","-26.91%",13,2420.00,-651.25],
+    ["UCM6308A","-18.11%",1,1966.13,-356.06],
+    ["UCM6304","-17.92%",1,1985.94,-355.93],
+    ["DHI-ITSJC-2303-DC12","-13.49%",2,696.96,-94.04],
+    ["DS-2CD2087G2H-LIU(2.8mm)(eF)(O-STD)","-1.89%",6,2428.00,-46.00],
+    ["TP-EAP613","-0.84%",3,711.00,-6.00],
+    ["DH-PFS3010-8ET-65","-2.86%",1,128.80,-3.68],
+    ["RG-RAP2266","-0.19%",3,964.14,-1.86],
+    ["Cable Ties 362x4.8mm (100Pcs)","-9.81%",1,9.38,-0.92],
+    ["GRP2612G","0%",10,1565.60,-0.02],
+  ];
+
   function fmt(n){ return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 
   // ---- Views / navigation ----
@@ -479,76 +527,77 @@
     });
   });
 
-  // ---- Bars (top 10) ----
-  const top10 = [...DATA30].sort((a,b)=>a[4]-b[4]).slice(0,10);
-  const maxLoss = Math.abs(top10[0][4]);
-  const barsEl = document.getElementById('bars-30');
-  top10.forEach(it=>{
-    const pct = Math.max(4, Math.abs(it[4])/maxLoss*100);
-    const row = document.createElement('div');
-    row.className='bar-row';
-    row.innerHTML = `<div class="name">${it[0]}</div><div class="bar-track"><div class="bar-fill" style="width:0"></div></div><div class="val">${fmt(it[4])}</div>`;
-    barsEl.appendChild(row);
-    requestAnimationFrame(()=> setTimeout(()=>{ row.querySelector('.bar-fill').style.width = pct+'%'; }, 60));
-  });
+  // ---- Generic per-scope window (bars + sortable/searchable/filterable table) ----
+  function initWindow(scope, data){
+    const top = [...data].sort((a,b)=>a[4]-b[4]).slice(0,10);
+    const maxLoss = Math.abs(top[0][4]);
+    const barsEl = document.getElementById('bars-'+scope);
+    top.forEach(it=>{
+      const pct = Math.max(4, Math.abs(it[4])/maxLoss*100);
+      const row = document.createElement('div');
+      row.className='bar-row';
+      row.innerHTML = `<div class="name">${it[0]}</div><div class="bar-track"><div class="bar-fill" style="width:0"></div></div><div class="val">${fmt(it[4])}</div>`;
+      barsEl.appendChild(row);
+      requestAnimationFrame(()=> setTimeout(()=>{ row.querySelector('.bar-fill').style.width = pct+'%'; }, 60));
+    });
 
-  // ---- Sortable / searchable / filterable table ----
-  let sortState = {key:'loss', dir:1};
-  let activeFilter = 'all';
-  let searchTerm = '';
+    const state = {key:'loss', dir:1, filter:'all', search:''};
+    const table = document.getElementById('table-'+scope);
+    const tbody = table.querySelector('tbody');
 
-  function applyTable(){
-    let rows = DATA30.map(r=>({name:r[0],margin:r[1],qty:r[2],sales:r[3],loss:r[4]}));
-    if(searchTerm){
-      const s = searchTerm.toLowerCase();
-      rows = rows.filter(r=> r.name.toLowerCase().includes(s));
+    function apply(){
+      let rows = data.map(r=>({name:r[0],margin:r[1],qty:r[2],sales:r[3],loss:r[4]}));
+      if(state.search){
+        const s = state.search.toLowerCase();
+        rows = rows.filter(r=> r.name.toLowerCase().includes(s));
+      }
+      if(state.filter==='high') rows = rows.filter(r=> r.loss < -500);
+      if(state.filter==='mid') rows = rows.filter(r=> r.loss <= -100 && r.loss >= -500);
+
+      rows.sort((a,b)=>{
+        const k = state.key;
+        if(typeof a[k]==='string') return state.dir * a[k].localeCompare(b[k]);
+        return state.dir * (a[k]-b[k]);
+      });
+
+      tbody.innerHTML='';
+      rows.forEach(r=>{
+        const cls = r.loss < -500 ? 'loss-hi' : (r.loss <= -100 ? 'loss-mid' : '');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${r.name}</td><td>${r.margin}</td><td class="num">${r.qty}</td><td class="num">${fmt(r.sales)}</td><td class="num ${cls}">${fmt(r.loss)}</td>`;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('row-count-'+scope).textContent = rows.length + ' صف / rows';
+
+      table.querySelectorAll('thead th').forEach(th=>{
+        th.classList.toggle('sorted', th.dataset.key===state.key);
+        const ic = th.querySelector('.sort-ic');
+        ic.textContent = th.dataset.key===state.key ? (state.dir===1?'↑':'↓') : '↕';
+      });
     }
-    if(activeFilter==='high') rows = rows.filter(r=> r.loss < -500);
-    if(activeFilter==='mid') rows = rows.filter(r=> r.loss <= -100 && r.loss >= -500);
 
-    rows.sort((a,b)=>{
-      const k = sortState.key;
-      if(typeof a[k]==='string') return sortState.dir * a[k].localeCompare(b[k]);
-      return sortState.dir * (a[k]-b[k]);
+    table.querySelectorAll('thead th').forEach(th=>{
+      th.addEventListener('click', ()=>{
+        if(state.key===th.dataset.key) state.dir *= -1;
+        else { state.key = th.dataset.key; state.dir = 1; }
+        apply();
+      });
+    });
+    document.getElementById('search-'+scope).addEventListener('input', e=>{ state.search = e.target.value; apply(); });
+    document.querySelectorAll(`.filter-chip[data-scope="${scope}"]`).forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        document.querySelectorAll(`.filter-chip[data-scope="${scope}"]`).forEach(c=>c.classList.remove('active'));
+        chip.classList.add('active');
+        state.filter = chip.dataset.filter;
+        apply();
+      });
     });
 
-    const tbody = document.querySelector('#table-30 tbody');
-    tbody.innerHTML='';
-    rows.forEach(r=>{
-      const cls = r.loss < -500 ? 'loss-hi' : (r.loss <= -100 ? 'loss-mid' : '');
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${r.name}</td><td>${r.margin}</td><td class="num">${r.qty}</td><td class="num">${fmt(r.sales)}</td><td class="num ${cls}">${fmt(r.loss)}</td>`;
-      tbody.appendChild(tr);
-    });
-    document.getElementById('row-count-30').textContent = rows.length + ' صف / rows';
-
-    document.querySelectorAll('#table-30 thead th').forEach(th=>{
-      th.classList.toggle('sorted', th.dataset.key===sortState.key);
-      const ic = th.querySelector('.sort-ic');
-      if(th.dataset.key===sortState.key) ic.textContent = sortState.dir===1 ? '↑' : '↓';
-      else ic.textContent = '↕';
-    });
+    apply();
   }
 
-  document.querySelectorAll('#table-30 thead th').forEach(th=>{
-    th.addEventListener('click', ()=>{
-      const key = th.dataset.key;
-      if(sortState.key===key) sortState.dir *= -1;
-      else { sortState.key = key; sortState.dir = th.dataset.type==='num' ? 1 : 1; }
-      applyTable();
-    });
-  });
-  document.getElementById('search-30').addEventListener('input', e=>{ searchTerm = e.target.value; applyTable(); });
-  document.querySelectorAll('.filter-chip').forEach(chip=>{
-    chip.addEventListener('click', ()=>{
-      document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
-      chip.classList.add('active');
-      activeFilter = chip.dataset.filter;
-      applyTable();
-    });
-  });
-
-  applyTable();
+  initWindow('30', DATA30);
+  initWindow('7', DATA7);
   goHome();
 </script>
 </body>
