@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Auditor مدقق ذكي</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+  :root{
+    --navy:#1f3864; --navy-ink:#14294a; --accent-amber:#a9660a; --accent-amber-bg:#fdf1de;
+    --danger:#a6362c; --danger-bg:#f7e0dd; --warn-bg:#fce8b2; --ok:#1f7a4d; --ok-bg:#e2f3e9;
+    --bg:#f5f4f0; --surface:#ffffff; --surface-2:#faf9f6; --border:#e2ded4; --text:#232019; --text-dim:#6b6558; --code-bg:#eeece5;
+  }
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+    --bg:#171512; --surface:#201d19; --surface-2:#26221d; --border:#3a352c; --text:#efece4; --text-dim:#a89f8c; --code-bg:#2b271f;
+    --accent-amber-bg:#3a2c14; --danger-bg:#3a201d; --warn-bg:#3a3016; --ok-bg:#183226;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#171512; --surface:#201d19; --surface-2:#26221d; --border:#3a352c; --text:#efece4; --text-dim:#a89f8c; --code-bg:#2b271f;
+    --accent-amber-bg:#3a2c14; --danger-bg:#3a201d; --warn-bg:#3a3016; --ok-bg:#183226;
+  }
+  *{box-sizing:border-box} html{direction:rtl}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif;line-height:1.75;font-variant-numeric:tabular-nums}
+  h1,h2,h3{font-family:'Cairo','IBM Plex Sans Arabic',sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:22px 18px 70px}
+  header.top{background:linear-gradient(135deg,var(--navy) 0%, var(--navy-ink) 100%);color:#fff;border-radius:16px;padding:24px 24px;margin-bottom:20px}
+  header.top .eyebrow{font-size:.78rem;opacity:.75;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  header.top h1{font-size:1.5rem;font-weight:800;margin:0 0 6px}
+  header.top p{margin:0;opacity:.88;font-size:.9rem;max-width:70ch}
+  .topics-nav{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .topic-pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 14px;font-size:.78rem}
+  .topic-pill.active{background:#fff;color:var(--navy);font-weight:700}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px}
+  .kpi .label{font-size:.72rem;color:var(--text-dim);margin-bottom:6px}
+  .kpi .value{font-size:1.15rem;font-weight:700;color:var(--danger)}
+  @media(max-width:720px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+  .report-chip{display:inline-flex;align-items:center;gap:8px;background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-family:monospace;font-size:.83rem;font-weight:600;color:var(--navy);margin:3px 5px 3px 0}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .report-chip{color:#8fb2e8}}
+  :root[data-theme="dark"] .report-chip{color:#8fb2e8}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+  .card h2{font-size:1.05rem;margin:0 0 10px;color:var(--navy)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card h2{color:#a9c4ef}}
+  :root[data-theme="dark"] .card h2{color:#a9c4ef}
+  .card p{margin:0 0 8px}
+  table{width:100%;border-collapse:collapse;font-size:.83rem}
+  th,td{padding:7px 9px;text-align:start;border-bottom:1px solid var(--border)}
+  thead th{background:var(--navy);color:#fff;font-weight:700;font-size:.76rem;position:sticky;top:0}
+  tbody tr:nth-child(even){background:var(--surface-2)}
+  td.num{text-align:left;font-variant-numeric:tabular-nums}
+  td.loss-hi{background:var(--danger-bg);font-weight:700;color:var(--danger)}
+  td.loss-mid{background:var(--warn-bg);font-weight:600}
+  .table-wrap{overflow-x:auto;max-height:420px;overflow-y:auto;border-radius:10px;border:1px solid var(--border)}
+  .bars{display:flex;flex-direction:column;gap:7px;margin:10px 0}
+  .bar-row{display:grid;grid-template-columns:160px 1fr 85px;align-items:center;gap:8px;font-size:.78rem}
+  .bar-row .name{color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar-track{background:var(--surface-2);border-radius:5px;height:14px;overflow:hidden}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--danger),#d97a6f);border-radius:5px}
+  .bar-row .val{font-weight:700;color:var(--danger);text-align:left}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:720px){.split{grid-template-columns:1fr}}
+  .split .half{border:1px solid var(--border);border-radius:10px;padding:13px 15px}
+  .split .half h3{margin:0 0 6px;font-size:.95rem}
+  .pct-big{font-size:1.8rem;font-weight:800;color:var(--danger)}
+  .rule-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+  .rule-chip{flex:0 0 auto;min-width:220px;background:var(--accent-amber-bg);border-inline-start:4px solid var(--accent-amber);border-radius:8px;padding:10px 12px;font-size:.78rem}
+  .rule-chip b{display:block;color:var(--accent-amber);margin-bottom:3px;font-size:.8rem}
+  .note-honest{border-inline-start:4px solid var(--text-dim);background:var(--surface-2);border-radius:8px;padding:11px 14px;margin:10px 0;font-size:.83rem;color:var(--text-dim);font-style:italic}
+  .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.7rem;font-weight:700}
+  .badge-ok{background:var(--ok-bg);color:var(--ok)}
+  .badge-danger{background:var(--danger-bg);color:var(--danger)}
+  .badge-warn{background:var(--warn-bg);color:var(--accent-amber)}
+  footer{text-align:center;color:var(--text-dim);font-size:.76rem;margin-top:26px}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">🤖 Smart Auditor — مدقق ذكي · لوحة فريق العمل الموحَّدة</div>
+    <h1>آخر موضوع مُغلَق: البيع بخسارة وتتبّع الأسعار</h1>
+    <p>هذه اللوحة تُحدَّث بعد إغلاق كل موضوع من مشروع متابعة بيان (مدير المشتريات). تعرض دائماً أحدث تقرير مُقفَل، بصيغة واحدة يشوفها كل فريق العمل.</p>
+    <div class="topics-nav">
+      <span class="topic-pill active">1. البيع بخسارة وتتبّع الأسعار ✅</span>
+      <span class="topic-pill">2. المخزون الراكد (قادم)</span>
+      <span class="topic-pill">3. أوامر الشراء (قادم)</span>
+    </div>
+  </header>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="label">أصناف بخسارة (30 يوم)</div><div class="value">41</div></div>
+    <div class="kpi"><div class="label">إجمالي الخسارة</div><div class="value">-33,326.96 ر.س</div></div>
+    <div class="kpi"><div class="label">وحدات مباعة بخسارة</div><div class="value">761</div></div>
+    <div class="kpi"><div class="label">أكبر خسارة فردية</div><div class="value" style="font-size:.9rem">-17,491.20 ر.س (52.5%)</div></div>
+  </div>
+
+  <div class="card">
+    <h2>مصدر البيانات</h2>
+    <div class="report-chip">📊 Profit By Item</div>
+    <div class="report-chip">📊 GM-Export-InvoiceItemDetail</div>
+    <p style="margin-top:8px;font-size:.82rem;color:var(--text-dim)">النطاق: 08/08/2026 → 07/09/2026 — بيانات حقيقية 100% من Zoho.</p>
+  </div>
+
+  <div class="card">
+    <h2>أعلى 10 أصناف خسارة</h2>
+    <div class="bars" id="bars"></div>
+  </div>
+
+  <div class="card">
+    <h2>مين المسؤول؟ (خلاصة الفحص الحي)</h2>
+    <div class="split">
+      <div class="half">
+        <h3>1) حالة مركّزة — 52.5%</h3>
+        <p style="font-size:.82rem">صنف واحد، فاتورة واحدة (SB-INV-WH05887). حقل "البائع" = اسم المالك — <span class="badge badge-warn">يحتاج تأكيداً بشرياً</span></p>
+      </div>
+      <div class="half">
+        <h3>2) الباقي — مشكلة تسعير عامة</h3>
+        <p style="font-size:.82rem">مباع لعشرات العملاء المختلفين — <span class="badge badge-danger">تصحيح سعر الصنف، لا مساءلة بائع</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>الجدول الكامل (41 صنفاً)</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>الصنف</th><th>الهامش</th><th>الكمية</th><th>إجمالي المبيعات</th><th>الخسارة</th></tr></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>القواعد الخمس الحاكمة (تنطبق على كل موضوع قادم)</h2>
+    <div class="rule-strip">
+      <div class="rule-chip"><b>1. اسأل عن النطاق</b>قبل أي تقرير — لا افتراض.</div>
+      <div class="rule-chip"><b>2. اسأل من يصحّح</b>بعد كل نتيجة قابلة للتنفيذ.</div>
+      <div class="rule-chip"><b>3. توصيات ديناميكية</b>تُحسَب من الوضع الحالي فقط.</div>
+      <div class="rule-chip"><b>4. مقارنة تلقائية</b>✅ مُصحَّح / ❌ متكرر / 🆕 جديد.</div>
+      <div class="rule-chip"><b>5. لا تُسرع بمساءلة بائع</b>مركَّز أم موزَّع أولاً.</div>
+    </div>
+  </div>
+
+  <div class="note-honest">📌 الكتيبات التفصيلية لكل طرف (المالك، المدير العام، بيان ومي) منفصلة — هذه اللوحة ملخَّص موحَّد لفريق العمل كامل.</div>
+
+  <footer>Smart Auditor مدقق ذكي · GCSD · بيانات 08/08/2026 → 07/09/2026 · آخر تحديث 07/09/2026</footer>
+</div>
+
+<script>
+  const data = [
+    ["DS-D5C98RB/B(EDLA)","-38.28%","3","45,688.80","-17,491.20"],
+    ["GWN7661E","-21.28%","90","17,377.92","-3,698.19"],
+    ["GWN7660E","-7.76%","154","28,010.00","-2,174.96"],
+    ["DS-3E1552P-SI(O-STD)","-38.41%","3","3,232.75","-1,241.75"],
+    ["DHI-IPMECZ-1013-ITA","-20.97%","1","5,786.46","-1,213.29"],
+    ["DHI-IPMECZ-1013-ISA","-20.97%","1","5,014.56","-1,051.44"],
+    ["IMOU-B7ED-5M0TEA-EU/FSP14","-15.92%","20","5,780.00","-920.00"],
+    ["DS-2CD2187G2H-LI(2.8mm)(eF)(O-STD)","-17.35%","14","5,239.50","-909.30"],
+    ["GWN7615","-25.04%","11","2,408.28","-602.97"],
+    ["DS-2CD1063G2-LIU(2.8mm)(O-STD)","-1.38%","211","36,005.79","-497.21"],
+    ["UCM6308A","-18.11%","1","1,966.13","-356.06"],
+    ["UCM6304","-17.92%","1","1,985.94","-355.93"],
+    ["DHI-ITSJC-2303-DC12","-11.56%","7","3,027.70","-349.86"],
+    ["GRP2601P","-16.11%","23","2,154.25","-347.00"],
+    ["DS-2CD2087G3-LI2UY(2.8mm)(O-STD)","-9.08%","8","2,999.52","-272.48"],
+    ["GRP2602W","-23.22%","9","1,088.73","-252.84"],
+    ["IPMECD-0262-M40-LED","-20.97%","2","1,140.80","-239.20"],
+    ["UCM6302","-19.80%","1","870.95","-172.48"],
+    ["DS-2XS2T41G1-ID/4G/C05S07(4mm)(O-STD)","-24.34%","1","668.25","-162.63"],
+    ["UCM6301","-18.31%","1","658.48","-120.58"],
+    ["DS-2CD2183G2-LI (T) (2.8mm).","-3.60%","12","3,299.25","-118.62"],
+    ["GWN7802P","-17.62%","1","618.50","-109.00"],
+    ["DH-XVR5108HS-4KL-I3","-3.71%","8","2,617.93","-97.25"],
+    ["MP60UB DSPPA","-3.03%","7","2,690.66","-81.46"],
+    ["TP-EAP613","-1.42%","22","5,214.00","-74.00"],
+    ["DH-PFA152-E","-11.22%","23","608.00","-68.20"],
+    ["GWN7801P","-17.79%","1","350.20","-62.30"],
+    ["DHI-VTH2624GW-WP","-25.15%","1","244.50","-61.50"],
+    ["DHI-IPMECD-2032-RM40-T20","-2.08%","2","2,894.40","-60.30"],
+    ["4U NETWORK CABINET 400x400 Layer9","-34.97%","1","91.13","-31.87"],
+    ["DS-7616NXI-I2/16P/S(STD)(E)","-0.56%","4","5,472.00","-30.50"],
+    ["DS-QAE0215G1-V(O-STD)","-5.38%","11","429.00","-23.10"],
+    ["ZK-F08 Mifare card","-13.42%","64","158.00","-21.20"],
+    ["GRP2601","-23.40%","1","88.13","-20.62"],
+    ["DH-IPC-HFW2849S-S-IL","-1.88%","3","933.75","-17.55"],
+    ["DH-XVR5104HS-I3","-3.73%","3","451.44","-16.86"],
+    ["DS-D5AC12T7-16S5(O-STD)","-0.02%","3","11,439.00","-2.25"],
+    ["Cable Ties 362x4.8mm (100Pcs)","-9.81%","1","9.38","-0.92"],
+    ["DSP8064B DSPPA","-0.02%","2","317.26","-0.05"],
+    ["DS-AE-DC8322-G2PRO(2CH)","0%","19","7,482.96","-0.02"],
+    ["GRP2612G","0%","10","1,565.60","-0.02"],
+  ];
+  const top10 = data.slice(0,10);
+  const maxLoss = 17491.20;
+  const barsEl = document.getElementById('bars');
+  top10.forEach(it=>{
+    const loss = parseFloat(it[4].replace(/,/g,''));
+    const pct = Math.max(4, Math.abs(loss)/maxLoss*100);
+    const row = document.createElement('div');
+    row.className='bar-row';
+    row.innerHTML = `<div class="name">${it[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><div class="val">${it[4]}</div>`;
+    barsEl.appendChild(row);
+  });
+  const tbody = document.getElementById('table-body');
+  data.forEach(it=>{
+    const loss = parseFloat(it[4].replace(/,/g,''));
+    const cls = loss < -500 ? 'loss-hi' : (loss < -100 ? 'loss-mid' : '');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${it[0]}</td><td>${it[1]}</td><td class="num">${it[2]}</td><td class="num">${it[3]}</td><td class="num ${cls}">${it[4]}</td>`;
+    tbody.appendChild(tr);
+  });
+</script>
+</body>
+</html>
