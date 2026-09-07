@@ -138,7 +138,8 @@
   .win-tabs{display:flex;gap:8px;margin:18px 0;border-bottom:2px solid var(--border);overflow-x:auto}
   .win-tab{flex:0 0 auto;padding:10px 18px;background:none;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:.86rem;color:var(--text-dim);border-bottom:3px solid transparent;white-space:nowrap}
   .win-tab.active{color:var(--navy)}
-  :root[data-theme="dark"] .win-tab.active, @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .win-tab.active{color:var(--gold-bright)}}
+  :root[data-theme="dark"] .win-tab.active{color:var(--gold-bright)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .win-tab.active{color:var(--gold-bright)}}
   .win-tab.active{border-bottom-color:var(--gold)}
   .win-tab .en{display:block;font-size:.68rem}
 
@@ -156,11 +157,13 @@
   .empty-state .en{display:block;margin-top:4px}
 
   .report-chip{display:inline-flex;align-items:center;gap:8px;background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-family:monospace;font-size:.8rem;font-weight:600;color:var(--navy);margin:3px 5px 3px 0}
-  :root[data-theme="dark"] .report-chip,@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .report-chip{color:var(--gold-bright)}}
+  :root[data-theme="dark"] .report-chip{color:var(--gold-bright)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .report-chip{color:var(--gold-bright)}}
 
   .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow)}
   .card h2{font-size:1.02rem;margin:0 0 4px;color:var(--navy)}
-  :root[data-theme="dark"] .card h2,@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card h2{color:var(--gold-bright)}}
+  :root[data-theme="dark"] .card h2{color:var(--gold-bright)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card h2{color:var(--gold-bright)}}
   .card h2 .en{display:block;font-size:.72rem;margin-top:2px}
   .card p{margin:0 0 8px}
 
