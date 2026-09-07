@@ -5,210 +5,551 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Smart Auditor مدقق ذكي</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
   :root{
-    --navy:#1f3864; --navy-ink:#14294a; --accent-amber:#a9660a; --accent-amber-bg:#fdf1de;
-    --danger:#a6362c; --danger-bg:#f7e0dd; --warn-bg:#fce8b2; --ok:#1f7a4d; --ok-bg:#e2f3e9;
-    --bg:#f5f4f0; --surface:#ffffff; --surface-2:#faf9f6; --border:#e2ded4; --text:#232019; --text-dim:#6b6558; --code-bg:#eeece5;
+    --navy:#132a4d; --navy-ink:#0b1b34; --gold:#c9973f; --gold-bright:#e0b566;
+    --accent-amber:#a9660a; --accent-amber-bg:#fdf1de;
+    --danger:#b0362c; --danger-bg:#f8e2df; --warn-bg:#fce9b4; --ok:#1f7a4d; --ok-bg:#e2f3e9;
+    --bg:#f3f2ee; --surface:#ffffff; --surface-2:#f8f7f3; --border:#e4e0d5; --text:#20201c; --text-dim:#6b6659; --code-bg:#efece3;
+    --shadow: 0 8px 24px -8px rgba(19,42,77,.18);
   }
   @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-    --bg:#171512; --surface:#201d19; --surface-2:#26221d; --border:#3a352c; --text:#efece4; --text-dim:#a89f8c; --code-bg:#2b271f;
-    --accent-amber-bg:#3a2c14; --danger-bg:#3a201d; --warn-bg:#3a3016; --ok-bg:#183226;
+    --bg:#0f1216; --surface:#171b21; --surface-2:#1d222a; --border:#2b313b; --text:#eceef1; --text-dim:#9aa2af; --code-bg:#1d222a;
+    --accent-amber-bg:#3a2c14; --danger-bg:#3a201d; --warn-bg:#3a3016; --ok-bg:#153226;
+    --shadow: 0 8px 28px -8px rgba(0,0,0,.5);
   }}
   :root[data-theme="dark"]{
-    --bg:#171512; --surface:#201d19; --surface-2:#26221d; --border:#3a352c; --text:#efece4; --text-dim:#a89f8c; --code-bg:#2b271f;
-    --accent-amber-bg:#3a2c14; --danger-bg:#3a201d; --warn-bg:#3a3016; --ok-bg:#183226;
+    --bg:#0f1216; --surface:#171b21; --surface-2:#1d222a; --border:#2b313b; --text:#eceef1; --text-dim:#9aa2af; --code-bg:#1d222a;
+    --accent-amber-bg:#3a2c14; --danger-bg:#3a201d; --warn-bg:#3a3016; --ok-bg:#153226;
+    --shadow: 0 8px 28px -8px rgba(0,0,0,.5);
   }
-  *{box-sizing:border-box} html{direction:rtl}
-  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif;line-height:1.75;font-variant-numeric:tabular-nums}
-  h1,h2,h3{font-family:'Cairo','IBM Plex Sans Arabic',sans-serif}
-  .wrap{max-width:1000px;margin:0 auto;padding:22px 18px 70px}
-  header.top{background:linear-gradient(135deg,var(--navy) 0%, var(--navy-ink) 100%);color:#fff;border-radius:16px;padding:24px 24px;margin-bottom:20px}
-  header.top .eyebrow{font-size:.78rem;opacity:.75;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-  header.top h1{font-size:1.5rem;font-weight:800;margin:0 0 6px}
-  header.top p{margin:0;opacity:.88;font-size:.9rem;max-width:70ch}
-  .topics-nav{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
-  .topic-pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 14px;font-size:.78rem}
-  .topic-pill.active{background:#fff;color:var(--navy);font-weight:700}
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:'IBM Plex Sans Arabic','Tajawal',system-ui,sans-serif;
+    line-height:1.7; font-variant-numeric:tabular-nums;
+  }
+  [dir="ltr"]{font-family:'Inter',system-ui,sans-serif}
+  h1,h2,h3,.disp{font-family:'Cairo','IBM Plex Sans Arabic',sans-serif}
+  .en{font-family:'Inter',system-ui,sans-serif;color:var(--text-dim);font-size:.86em}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  [hidden]{display:none!important}
+
+  /* ===== Top bar ===== */
+  .topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  .topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;max-width:1080px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:10px;cursor:pointer}
+  .brand-mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--navy),var(--navy-ink));display:flex;align-items:center;justify-content:center;color:var(--gold-bright);font-family:'Cairo';font-weight:900;font-size:1.1rem;box-shadow:var(--shadow);flex-shrink:0}
+  .brand-name{font-family:'Cairo';font-weight:800;font-size:1rem;line-height:1.2}
+  .brand-name .sub{display:block;font-size:.68rem;font-weight:500;color:var(--text-dim)}
+  .crumbs{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--text-dim)}
+  .crumbs button{background:none;border:none;color:var(--text-dim);cursor:pointer;font-family:inherit;font-size:inherit;padding:2px 4px;border-radius:6px}
+  .crumbs button:hover{background:var(--surface-2);color:var(--text)}
+  .crumbs .sep{opacity:.5}
+  .crumbs .now{color:var(--gold);font-weight:700}
+
+  /* ===== Views ===== */
+  .view{display:none;animation:viewIn .35s ease}
+  .view.active{display:block}
+  @keyframes viewIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* ===== Home hero ===== */
+  .hero{
+    background:
+      radial-gradient(1200px 400px at 20% -10%, rgba(201,151,63,.18), transparent),
+      linear-gradient(150deg,var(--navy) 0%, var(--navy-ink) 100%);
+    color:#fff;border-radius:0 0 28px 28px;padding:44px 20px 40px;position:relative;overflow:hidden;
+  }
+  .hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 85% 20%, rgba(224,181,102,.14) 0, transparent 45%);pointer-events:none}
+  .hero-inner{max-width:1080px;margin:0 auto;position:relative}
+  .hero-mark{width:76px;height:76px;border-radius:20px;background:linear-gradient(135deg,var(--gold-bright),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Cairo';font-weight:900;font-size:1.9rem;color:var(--navy-ink);box-shadow:0 12px 30px -8px rgba(0,0,0,.4);margin-bottom:18px}
+  .hero h1{font-size:1.9rem;font-weight:800;margin:0 0 4px;text-wrap:balance}
+  .hero h1 .en{display:block;font-size:.6em;font-weight:600;color:rgba(255,255,255,.65);margin-top:4px}
+  .hero p.tagline{margin:10px 0 0;font-size:1rem;opacity:.92;max-width:62ch}
+  .hero p.tagline .en{display:block;color:rgba(255,255,255,.62);margin-top:3px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .hero-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 15px;font-size:.8rem;display:flex;align-items:center;gap:7px}
+
+  .growth-band{display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.08);border:1px solid rgba(224,181,102,.35);border-radius:16px;padding:16px 20px;margin-top:24px}
+  .growth-num{font-family:'Cairo';font-weight:900;font-size:2.3rem;color:var(--gold-bright);line-height:1}
+  .growth-text{font-size:.88rem;opacity:.92}
+  .growth-text b{color:var(--gold-bright)}
+  .growth-text .en{display:block;margin-top:2px;color:rgba(255,255,255,.6)}
+
+  /* ===== Sections on home ===== */
+  .section-label{display:flex;align-items:center;gap:10px;margin:34px 0 16px}
+  .section-label h2{margin:0;font-size:1.05rem}
+  .section-label .en{font-size:.78rem}
+  .section-label::after{content:"";flex:1;height:1px;background:var(--border)}
+
+  .dept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:8px}
+  .dept-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;
+    cursor:pointer;transition:.2s;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .dept-card:hover{transform:translateY(-3px);border-color:var(--gold)}
+  .dept-card .icon{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,var(--navy),var(--navy-ink));display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:14px}
+  .dept-card h3{margin:0 0 4px;font-size:1.02rem}
+  .dept-card .en{display:block;font-size:.76rem;margin-bottom:8px}
+  .dept-card p{margin:0;font-size:.83rem;color:var(--text-dim)}
+  .dept-card .status-row{display:flex;align-items:center;justify-content:space-between;margin-top:16px}
+  .dept-card .arrow{font-size:1.2rem;color:var(--gold);transition:.2s}
+  .dept-card:hover .arrow{transform:translateX(-4px)}
+  html[dir="rtl"] .dept-card:hover .arrow{transform:translateX(4px)}
+
+  .promo-card{
+    display:flex;align-items:center;gap:16px;background:linear-gradient(120deg,var(--surface-2),var(--surface));
+    border:1px dashed var(--gold);border-radius:16px;padding:16px 20px;margin-top:8px;
+  }
+  .promo-card .medal{font-size:1.9rem}
+  .promo-card b{font-size:.92rem}
+  .promo-card .en{display:block;font-size:.78rem}
+  .promo-card small{color:var(--text-dim);font-size:.78rem}
+
+  .footer-note{text-align:center;color:var(--text-dim);font-size:.78rem;margin:40px 0 30px}
+
+  /* ===== Generic content padding for non-hero views ===== */
+  .content-pad{padding:26px 20px 60px}
+
+  /* Department view header */
+  .dept-header{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .dept-header .icon-lg{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--navy),var(--navy-ink));display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+  .dept-header h1{margin:0;font-size:1.35rem}
+  .dept-header .en{display:block;font-size:.75rem}
+
+  .topic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .topic-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;cursor:pointer;transition:.2s;box-shadow:var(--shadow)}
+  .topic-card:hover{transform:translateY(-2px);border-color:var(--gold)}
+  .topic-card .badge-status{display:inline-flex;align-items:center;gap:5px;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--ok-bg);color:var(--ok);margin-bottom:10px}
+  .topic-card h3{margin:0 0 4px;font-size:.98rem}
+  .topic-card .en{display:block;font-size:.75rem;margin-bottom:6px}
+  .topic-card p{margin:0;font-size:.8rem;color:var(--text-dim)}
+
+  /* ===== Report view ===== */
+  .report-header{margin-bottom:18px}
+  .report-header h1{margin:0 0 2px;font-size:1.3rem}
+  .report-header .en{display:block;font-size:.78rem}
+  .report-header .updated{font-size:.78rem;color:var(--text-dim);margin-top:6px;display:flex;align-items:center;gap:6px}
+
+  .win-tabs{display:flex;gap:8px;margin:18px 0;border-bottom:2px solid var(--border);overflow-x:auto}
+  .win-tab{flex:0 0 auto;padding:10px 18px;background:none;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:.86rem;color:var(--text-dim);border-bottom:3px solid transparent;white-space:nowrap}
+  .win-tab.active{color:var(--navy)}
+  :root[data-theme="dark"] .win-tab.active, @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .win-tab.active{color:var(--gold-bright)}}
+  .win-tab.active{border-bottom-color:var(--gold)}
+  .win-tab .en{display:block;font-size:.68rem}
+
+  .win-panel{display:none}
+  .win-panel.active{display:block;animation:viewIn .3s ease}
+
   .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
-  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px}
-  .kpi .label{font-size:.72rem;color:var(--text-dim);margin-bottom:6px}
-  .kpi .value{font-size:1.15rem;font-weight:700;color:var(--danger)}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+  .kpi .label{font-size:.7rem;color:var(--text-dim)}
+  .kpi .label .en{display:block;font-size:.9em}
+  .kpi .value{font-size:1.18rem;font-weight:800;color:var(--danger);margin-top:4px}
   @media(max-width:720px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
-  .report-chip{display:inline-flex;align-items:center;gap:8px;background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-family:monospace;font-size:.83rem;font-weight:600;color:var(--navy);margin:3px 5px 3px 0}
-  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .report-chip{color:#8fb2e8}}
-  :root[data-theme="dark"] .report-chip{color:#8fb2e8}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px}
-  .card h2{font-size:1.05rem;margin:0 0 10px;color:var(--navy)}
-  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card h2{color:#a9c4ef}}
-  :root[data-theme="dark"] .card h2{color:#a9c4ef}
+
+  .empty-state{background:var(--surface);border:1px dashed var(--border);border-radius:14px;padding:30px 20px;text-align:center;color:var(--text-dim);font-size:.9rem}
+  .empty-state .en{display:block;margin-top:4px}
+
+  .report-chip{display:inline-flex;align-items:center;gap:8px;background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-family:monospace;font-size:.8rem;font-weight:600;color:var(--navy);margin:3px 5px 3px 0}
+  :root[data-theme="dark"] .report-chip,@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .report-chip{color:var(--gold-bright)}}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .card h2{font-size:1.02rem;margin:0 0 4px;color:var(--navy)}
+  :root[data-theme="dark"] .card h2,@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card h2{color:var(--gold-bright)}}
+  .card h2 .en{display:block;font-size:.72rem;margin-top:2px}
   .card p{margin:0 0 8px}
-  table{width:100%;border-collapse:collapse;font-size:.83rem}
-  th,td{padding:7px 9px;text-align:start;border-bottom:1px solid var(--border)}
-  thead th{background:var(--navy);color:#fff;font-weight:700;font-size:.76rem;position:sticky;top:0}
-  tbody tr:nth-child(even){background:var(--surface-2)}
-  td.num{text-align:left;font-variant-numeric:tabular-nums}
-  td.loss-hi{background:var(--danger-bg);font-weight:700;color:var(--danger)}
-  td.loss-mid{background:var(--warn-bg);font-weight:600}
-  .table-wrap{overflow-x:auto;max-height:420px;overflow-y:auto;border-radius:10px;border:1px solid var(--border)}
-  .bars{display:flex;flex-direction:column;gap:7px;margin:10px 0}
-  .bar-row{display:grid;grid-template-columns:160px 1fr 85px;align-items:center;gap:8px;font-size:.78rem}
+
+  .bars{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .bar-row{display:grid;grid-template-columns:150px 1fr 90px;align-items:center;gap:8px;font-size:.78rem}
   .bar-row .name{color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .bar-track{background:var(--surface-2);border-radius:5px;height:14px;overflow:hidden}
-  .bar-fill{height:100%;background:linear-gradient(90deg,var(--danger),#d97a6f);border-radius:5px}
+  .bar-track{background:var(--surface-2);border-radius:6px;height:15px;overflow:hidden}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--danger),#d9847a);border-radius:6px;transition:width .6s ease}
   .bar-row .val{font-weight:700;color:var(--danger);text-align:left}
-  .split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:720px){.split{grid-template-columns:1fr}}
-  .split .half{border:1px solid var(--border);border-radius:10px;padding:13px 15px}
-  .split .half h3{margin:0 0 6px;font-size:.95rem}
-  .pct-big{font-size:1.8rem;font-weight:800;color:var(--danger)}
-  .rule-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
-  .rule-chip{flex:0 0 auto;min-width:220px;background:var(--accent-amber-bg);border-inline-start:4px solid var(--accent-amber);border-radius:8px;padding:10px 12px;font-size:.78rem}
-  .rule-chip b{display:block;color:var(--accent-amber);margin-bottom:3px;font-size:.8rem}
-  .note-honest{border-inline-start:4px solid var(--text-dim);background:var(--surface-2);border-radius:8px;padding:11px 14px;margin:10px 0;font-size:.83rem;color:var(--text-dim);font-style:italic}
-  .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.7rem;font-weight:700}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.split{grid-template-columns:1fr}}
+  .split .half{border:1px solid var(--border);border-radius:12px;padding:15px 17px;background:var(--surface-2)}
+  .split .half h3{margin:0 0 4px;font-size:.94rem}
+  .split .half .en{display:block;font-size:.72rem;margin-bottom:8px}
+  .pct-big{font-size:1.9rem;font-weight:900;color:var(--danger);font-family:'Cairo'}
+  .fact-line{display:flex;justify-content:space-between;font-size:.8rem;padding:5px 0;border-bottom:1px dashed var(--border)}
+  .fact-line:last-child{border-bottom:none}
+  .fact-line b{color:var(--text)}
+
+  .badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.72rem;font-weight:700}
   .badge-ok{background:var(--ok-bg);color:var(--ok)}
   .badge-danger{background:var(--danger-bg);color:var(--danger)}
   .badge-warn{background:var(--warn-bg);color:var(--accent-amber)}
-  footer{text-align:center;color:var(--text-dim);font-size:.76rem;margin-top:26px}
-</style>
 
+  .table-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .search-box{position:relative;flex:1;min-width:200px}
+  .search-box input{width:100%;padding:9px 36px 9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:inherit;font-size:.85rem}
+  .search-box input:focus{outline:2px solid var(--gold);outline-offset:-1px}
+  .search-box .ic{position:absolute;inset-inline-end:12px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:.85rem;pointer-events:none}
+  .filter-chip{border:1px solid var(--border);background:var(--surface-2);color:var(--text-dim);border-radius:999px;padding:7px 14px;font-size:.78rem;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .filter-chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .row-count{font-size:.76rem;color:var(--text-dim);white-space:nowrap}
+
+  table{width:100%;border-collapse:collapse;font-size:.83rem}
+  th,td{padding:8px 10px;text-align:start;border-bottom:1px solid var(--border)}
+  thead th{background:var(--navy);color:#fff;font-weight:700;font-size:.75rem;position:sticky;top:0;cursor:pointer;user-select:none;white-space:nowrap}
+  thead th .en{display:block;font-size:.85em;font-weight:500;opacity:.75}
+  thead th .sort-ic{opacity:.5;margin-inline-start:4px;font-size:.85em}
+  thead th.sorted .sort-ic{opacity:1;color:var(--gold-bright)}
+  tbody tr:nth-child(even){background:var(--surface-2)}
+  tbody tr{transition:background .12s}
+  tbody tr:hover{background:var(--code-bg)}
+  td.num{text-align:left;font-variant-numeric:tabular-nums}
+  td.loss-hi{background:var(--danger-bg);font-weight:700;color:var(--danger)}
+  td.loss-mid{background:var(--warn-bg);font-weight:600}
+  .table-wrap{overflow-x:auto;max-height:560px;overflow-y:auto;border-radius:12px;border:1px solid var(--border)}
+
+  .note-honest{border-inline-start:4px solid var(--text-dim);background:var(--surface-2);border-radius:10px;padding:12px 16px;margin:10px 0;font-size:.82rem;color:var(--text-dim);font-style:italic}
+  .note-honest .en{display:block;margin-top:3px;font-style:normal}
+
+  ::-webkit-scrollbar{height:8px;width:8px}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px}
+</style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <div class="eyebrow">🤖 Smart Auditor — مدقق ذكي · لوحة فريق العمل الموحَّدة</div>
-    <h1>آخر موضوع مُغلَق: البيع بخسارة وتتبّع الأسعار</h1>
-    <p>هذه اللوحة تُحدَّث بعد إغلاق كل موضوع من مشروع متابعة بيان (مدير المشتريات). تعرض دائماً أحدث تقرير مُقفَل، بصيغة واحدة يشوفها كل فريق العمل.</p>
-    <div class="topics-nav">
-      <span class="topic-pill active">1. البيع بخسارة وتتبّع الأسعار ✅</span>
-      <span class="topic-pill">2. المخزون الراكد (قادم)</span>
-      <span class="topic-pill">3. أوامر الشراء (قادم)</span>
-    </div>
-  </header>
 
-  <div class="kpi-row">
-    <div class="kpi"><div class="label">أصناف بخسارة (30 يوم)</div><div class="value">41</div></div>
-    <div class="kpi"><div class="label">إجمالي الخسارة</div><div class="value">-33,326.96 ر.س</div></div>
-    <div class="kpi"><div class="label">وحدات مباعة بخسارة</div><div class="value">761</div></div>
-    <div class="kpi"><div class="label">أكبر خسارة فردية</div><div class="value" style="font-size:.9rem">-17,491.20 ر.س (52.5%)</div></div>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand" onclick="goHome()">
+      <div class="brand-mark">GC</div>
+      <div class="brand-name">Smart Auditor <span class="sub">مدقق ذكي · GCSD</span></div>
+    </div>
+    <div class="crumbs" id="crumbs"></div>
+  </div>
+</div>
+
+<!-- ============ HOME VIEW ============ -->
+<div class="view active" id="view-home">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-mark">GC</div>
+      <h1>أهلاً بك في المدقق الذكي<span class="en">Welcome to Smart Auditor</span></h1>
+      <p class="tagline">لوحة موحَّدة لفريق العمل تتابع أداء كل قسم بأرقام حقيقية من Zoho Books، لحظة بلحظة.<span class="en">A unified team dashboard tracking every department's performance with real Zoho Books data, always up to date.</span></p>
+
+      <div class="growth-band">
+        <div class="growth-num">20%</div>
+        <div class="growth-text">هدف النمو السنوي المستهدف لهذا العام — <b>وأنت جزء منه</b>.<span class="en">Our target annual growth this year — <b>and you're part of it</b>.</span></div>
+      </div>
+
+      <div class="hero-meta">
+        <div class="hero-chip">🕐 <span id="last-updated-home">آخر تحديث: 07/09/2026</span></div>
+        <div class="hero-chip">🏢 Gulf Computer For Security Devices</div>
+        <div class="hero-chip">📊 مصدر البيانات: Zoho Books</div>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>مصدر البيانات</h2>
+  <div class="wrap content-pad" style="padding-top:8px">
+    <div class="section-label"><h2>الأقسام المتاحة <span class="en">Available Departments</span></h2></div>
+    <div class="dept-grid">
+      <div class="dept-card" onclick="goDept('purchasing')">
+        <div class="icon">📦</div>
+        <h3>المشتريات والمخزون والجرد</h3>
+        <span class="en">Purchasing, Inventory &amp; Stocktaking</span>
+        <p>تتبّع الأسعار، البيع بخسارة، المخزون، وأوامر الشراء.</p>
+        <div class="status-row">
+          <span class="badge badge-ok">1 موضوع نشط · 1 active</span>
+          <span class="arrow">←</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="promo-card">
+      <div class="medal">🏆</div>
+      <div>
+        <b>موظف الشهر — قريباً</b><span class="en">Employee of the Month — Coming soon</span>
+        <small>سيُختار شهرياً حسب الأداء الفعلي لتحفيز الفريق. <span class="en">Selected monthly by real performance to motivate the team.</span></small>
+      </div>
+    </div>
+
+    <div class="footer-note">Smart Auditor مدقق ذكي · GCSD · بيانات حقيقية 100% من Zoho Books</div>
+  </div>
+</div>
+
+<!-- ============ DEPARTMENT VIEW: Purchasing ============ -->
+<div class="view" id="view-dept-purchasing">
+  <div class="wrap content-pad">
+    <div class="dept-header">
+      <div class="icon-lg">📦</div>
+      <div><h1>المشتريات والمخزون والجرد</h1><span class="en">Purchasing, Inventory &amp; Stocktaking</span></div>
+    </div>
+    <div class="topic-grid">
+      <div class="topic-card" onclick="goReport('profit-loss')">
+        <span class="badge-status">✅ مُغلَق · Closed</span>
+        <h3>أصناف البيع بربح وخسارة</h3>
+        <span class="en">Items Sold at Profit &amp; Loss</span>
+        <p>أي صنف يُباع بأقل من تكلفته، ومن باعه، ومتى.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ REPORT VIEW: Profit & Loss ============ -->
+<div class="view" id="view-report-profit-loss">
+  <div class="wrap content-pad">
+    <div class="report-header">
+      <h1>أصناف البيع بربح وخسارة<span class="en">Items Sold at Profit &amp; Loss</span></h1>
+      <div class="updated">🕐 آخر تحديث يدوي: <b id="last-updated-report">07/09/2026</b><span class="en">Last manual update</span></div>
+    </div>
+
     <div class="report-chip">📊 Profit By Item</div>
     <div class="report-chip">📊 GM-Export-InvoiceItemDetail</div>
-    <p style="margin-top:8px;font-size:.82rem;color:var(--text-dim)">النطاق: 08/08/2026 → 07/09/2026 — بيانات حقيقية 100% من Zoho.</p>
-  </div>
 
-  <div class="card">
-    <h2>أعلى 10 أصناف خسارة</h2>
-    <div class="bars" id="bars"></div>
-  </div>
+    <div class="win-tabs" id="win-tabs">
+      <button class="win-tab active" data-win="d30">آخر 30 يوماً<span class="en">Last 30 days</span></button>
+      <button class="win-tab" data-win="d7">آخر 7 أيام<span class="en">Last 7 days</span></button>
+      <button class="win-tab" data-win="d1">آخر يوم<span class="en">Last day</span></button>
+    </div>
 
-  <div class="card">
-    <h2>مين المسؤول؟ (خلاصة الفحص الحي)</h2>
-    <div class="split">
-      <div class="half">
-        <h3>1) حالة مركّزة — 52.5%</h3>
-        <p style="font-size:.82rem">صنف واحد، فاتورة واحدة (SB-INV-WH05887). حقل "البائع" = اسم المالك — <span class="badge badge-warn">يحتاج تأكيداً بشرياً</span></p>
+    <!-- ---- 30 DAY WINDOW ---- -->
+    <div class="win-panel active" id="win-d30">
+      <div class="kpi-row">
+        <div class="kpi"><div class="label">أصناف بخسارة<span class="en">Loss items</span></div><div class="value">41</div></div>
+        <div class="kpi"><div class="label">إجمالي الخسارة<span class="en">Total loss</span></div><div class="value">-33,326.96 ر.س</div></div>
+        <div class="kpi"><div class="label">وحدات مباعة بخسارة<span class="en">Units at loss</span></div><div class="value">761</div></div>
+        <div class="kpi"><div class="label">أكبر خسارة فردية<span class="en">Biggest single loss</span></div><div class="value" style="font-size:.88rem">-17,491.20 ر.س (52.5%)</div></div>
       </div>
-      <div class="half">
-        <h3>2) الباقي — مشكلة تسعير عامة</h3>
-        <p style="font-size:.82rem">مباع لعشرات العملاء المختلفين — <span class="badge badge-danger">تصحيح سعر الصنف، لا مساءلة بائع</span></p>
+      <p style="font-size:.8rem;color:var(--text-dim)">النطاق: 08/08/2026 → 07/09/2026 · <span class="en">Range: 2026-08-08 → 2026-09-07</span></p>
+
+      <div class="card">
+        <h2>أعلى 10 أصناف خسارة<span class="en">Top 10 loss items</span></h2>
+        <div class="bars" id="bars-30"></div>
+      </div>
+
+      <div class="card">
+        <h2>مين المسؤول؟ (خلاصة الفحص الحي)<span class="en">Who's responsible? (live audit findings)</span></h2>
+        <div class="split">
+          <div class="half">
+            <h3>1) حالة مركّزة — 52.5%</h3>
+            <span class="en">A single concentrated case</span>
+            <div class="pct-big">52.5%</div>
+            <div class="fact-line"><span>الصنف / Item</span><b>DS-D5C98RB/B(EDLA)</b></div>
+            <div class="fact-line"><span>رقم الفاتورة / Invoice#</span><b>SB-INV-WH05887</b></div>
+            <div class="fact-line"><span>الفرع / Branch</span><b>Pillars of Security Cities Foundation</b></div>
+            <div class="fact-line"><span>المتسبب الأعلى نسبة (100%) / Top contributor</span><b>Yousef Al Yousef</b></div>
+            <p style="font-size:.78rem;margin-top:8px">حقل "البائع" المسجَّل = اسم المالك نفسه — <span class="badge badge-warn">يحتاج تأكيداً بشرياً</span></p>
+          </div>
+          <div class="half">
+            <h3>2) الباقي — مشكلة تسعير عامة</h3>
+            <span class="en">The rest — a systemic pricing issue</span>
+            <div class="fact-line"><span>GWN7661E</span><b>10-20+ عميلاً</b></div>
+            <div class="fact-line"><span>GWN7660E</span><b>10-20+ عميلاً</b></div>
+            <p style="font-size:.78rem;margin-top:8px">مباع لعشرات العملاء المختلفين — <span class="badge badge-danger">تصحيح سعر الصنف، لا مساءلة بائع</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>الجدول الكامل — 41 صنفاً<span class="en">Full table — 41 items</span></h2>
+        <div class="table-toolbar">
+          <div class="search-box">
+            <input type="text" id="search-30" placeholder="ابحث عن صنف أو SKU... / Search item or SKU...">
+            <span class="ic">🔍</span>
+          </div>
+          <button class="filter-chip active" data-filter="all">الكل · All</button>
+          <button class="filter-chip" data-filter="high">خسارة كبيرة (&gt;500) · High</button>
+          <button class="filter-chip" data-filter="mid">متوسطة (100-500) · Mid</button>
+          <span class="row-count" id="row-count-30">41 صف</span>
+        </div>
+        <div class="table-wrap">
+          <table id="table-30">
+            <thead><tr>
+              <th data-key="name" data-type="str">الصنف<span class="en">Item</span><span class="sort-ic">↕</span></th>
+              <th data-key="margin" data-type="num">الهامش<span class="en">Margin</span><span class="sort-ic">↕</span></th>
+              <th data-key="qty" data-type="num">الكمية<span class="en">Qty</span><span class="sort-ic">↕</span></th>
+              <th data-key="sales" data-type="num">إجمالي المبيعات<span class="en">Total Sales</span><span class="sort-ic">↕</span></th>
+              <th data-key="loss" data-type="num">الخسارة<span class="en">Loss</span><span class="sort-ic">↕</span></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="card">
-    <h2>الجدول الكامل (41 صنفاً)</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>الصنف</th><th>الهامش</th><th>الكمية</th><th>إجمالي المبيعات</th><th>الخسارة</th></tr></thead>
-        <tbody id="table-body"></tbody>
-      </table>
+    <!-- ---- 7 DAY WINDOW ---- -->
+    <div class="win-panel" id="win-d7">
+      <div class="empty-state">
+        ⏳ لم يُولَّد بعد لهذه النافذة الزمنية — سيُحدَّث في أول طلب تحديث يدوي قادم.
+        <span class="en">Not generated yet for this window — will populate on the next manual update request.</span>
+      </div>
     </div>
-  </div>
 
-  <div class="card">
-    <h2>القواعد الخمس الحاكمة (تنطبق على كل موضوع قادم)</h2>
-    <div class="rule-strip">
-      <div class="rule-chip"><b>1. اسأل عن النطاق</b>قبل أي تقرير — لا افتراض.</div>
-      <div class="rule-chip"><b>2. اسأل من يصحّح</b>بعد كل نتيجة قابلة للتنفيذ.</div>
-      <div class="rule-chip"><b>3. توصيات ديناميكية</b>تُحسَب من الوضع الحالي فقط.</div>
-      <div class="rule-chip"><b>4. مقارنة تلقائية</b>✅ مُصحَّح / ❌ متكرر / 🆕 جديد.</div>
-      <div class="rule-chip"><b>5. لا تُسرع بمساءلة بائع</b>مركَّز أم موزَّع أولاً.</div>
+    <!-- ---- 1 DAY WINDOW ---- -->
+    <div class="win-panel" id="win-d1">
+      <div class="kpi-row">
+        <div class="kpi"><div class="label">أصناف بخسارة<span class="en">Loss items</span></div><div class="value" style="color:var(--ok)">0</div></div>
+      </div>
+      <div class="empty-state">
+        ✅ لا توجد معاملات بيع خلال يوم 07/09/2026 حتى لحظة التحديث — مؤكَّد من النظام مباشرة.
+        <span class="en">No sales transactions on 2026-09-07 as of this update — confirmed directly from the system.</span>
+      </div>
     </div>
+
   </div>
-
-  <div class="note-honest">📌 الكتيبات التفصيلية لكل طرف (المالك، المدير العام، بيان ومي) منفصلة — هذه اللوحة ملخَّص موحَّد لفريق العمل كامل.</div>
-
-  <footer>Smart Auditor مدقق ذكي · GCSD · بيانات 08/08/2026 → 07/09/2026 · آخر تحديث 07/09/2026</footer>
 </div>
 
 <script>
-  const data = [
-    ["DS-D5C98RB/B(EDLA)","-38.28%","3","45,688.80","-17,491.20"],
-    ["GWN7661E","-21.28%","90","17,377.92","-3,698.19"],
-    ["GWN7660E","-7.76%","154","28,010.00","-2,174.96"],
-    ["DS-3E1552P-SI(O-STD)","-38.41%","3","3,232.75","-1,241.75"],
-    ["DHI-IPMECZ-1013-ITA","-20.97%","1","5,786.46","-1,213.29"],
-    ["DHI-IPMECZ-1013-ISA","-20.97%","1","5,014.56","-1,051.44"],
-    ["IMOU-B7ED-5M0TEA-EU/FSP14","-15.92%","20","5,780.00","-920.00"],
-    ["DS-2CD2187G2H-LI(2.8mm)(eF)(O-STD)","-17.35%","14","5,239.50","-909.30"],
-    ["GWN7615","-25.04%","11","2,408.28","-602.97"],
-    ["DS-2CD1063G2-LIU(2.8mm)(O-STD)","-1.38%","211","36,005.79","-497.21"],
-    ["UCM6308A","-18.11%","1","1,966.13","-356.06"],
-    ["UCM6304","-17.92%","1","1,985.94","-355.93"],
-    ["DHI-ITSJC-2303-DC12","-11.56%","7","3,027.70","-349.86"],
-    ["GRP2601P","-16.11%","23","2,154.25","-347.00"],
-    ["DS-2CD2087G3-LI2UY(2.8mm)(O-STD)","-9.08%","8","2,999.52","-272.48"],
-    ["GRP2602W","-23.22%","9","1,088.73","-252.84"],
-    ["IPMECD-0262-M40-LED","-20.97%","2","1,140.80","-239.20"],
-    ["UCM6302","-19.80%","1","870.95","-172.48"],
-    ["DS-2XS2T41G1-ID/4G/C05S07(4mm)(O-STD)","-24.34%","1","668.25","-162.63"],
-    ["UCM6301","-18.31%","1","658.48","-120.58"],
-    ["DS-2CD2183G2-LI (T) (2.8mm).","-3.60%","12","3,299.25","-118.62"],
-    ["GWN7802P","-17.62%","1","618.50","-109.00"],
-    ["DH-XVR5108HS-4KL-I3","-3.71%","8","2,617.93","-97.25"],
-    ["MP60UB DSPPA","-3.03%","7","2,690.66","-81.46"],
-    ["TP-EAP613","-1.42%","22","5,214.00","-74.00"],
-    ["DH-PFA152-E","-11.22%","23","608.00","-68.20"],
-    ["GWN7801P","-17.79%","1","350.20","-62.30"],
-    ["DHI-VTH2624GW-WP","-25.15%","1","244.50","-61.50"],
-    ["DHI-IPMECD-2032-RM40-T20","-2.08%","2","2,894.40","-60.30"],
-    ["4U NETWORK CABINET 400x400 Layer9","-34.97%","1","91.13","-31.87"],
-    ["DS-7616NXI-I2/16P/S(STD)(E)","-0.56%","4","5,472.00","-30.50"],
-    ["DS-QAE0215G1-V(O-STD)","-5.38%","11","429.00","-23.10"],
-    ["ZK-F08 Mifare card","-13.42%","64","158.00","-21.20"],
-    ["GRP2601","-23.40%","1","88.13","-20.62"],
-    ["DH-IPC-HFW2849S-S-IL","-1.88%","3","933.75","-17.55"],
-    ["DH-XVR5104HS-I3","-3.73%","3","451.44","-16.86"],
-    ["DS-D5AC12T7-16S5(O-STD)","-0.02%","3","11,439.00","-2.25"],
-    ["Cable Ties 362x4.8mm (100Pcs)","-9.81%","1","9.38","-0.92"],
-    ["DSP8064B DSPPA","-0.02%","2","317.26","-0.05"],
-    ["DS-AE-DC8322-G2PRO(2CH)","0%","19","7,482.96","-0.02"],
-    ["GRP2612G","0%","10","1,565.60","-0.02"],
+  const DATA30 = [
+    ["DS-D5C98RB/B(EDLA)","-38.28%",3,45688.80,-17491.20],
+    ["GWN7661E","-21.28%",90,17377.92,-3698.19],
+    ["GWN7660E","-7.76%",154,28010.00,-2174.96],
+    ["DS-3E1552P-SI(O-STD)","-38.41%",3,3232.75,-1241.75],
+    ["DHI-IPMECZ-1013-ITA","-20.97%",1,5786.46,-1213.29],
+    ["DHI-IPMECZ-1013-ISA","-20.97%",1,5014.56,-1051.44],
+    ["IMOU-B7ED-5M0TEA-EU/FSP14","-15.92%",20,5780.00,-920.00],
+    ["DS-2CD2187G2H-LI(2.8mm)(eF)(O-STD)","-17.35%",14,5239.50,-909.30],
+    ["GWN7615","-25.04%",11,2408.28,-602.97],
+    ["DS-2CD1063G2-LIU(2.8mm)(O-STD)","-1.38%",211,36005.79,-497.21],
+    ["UCM6308A","-18.11%",1,1966.13,-356.06],
+    ["UCM6304","-17.92%",1,1985.94,-355.93],
+    ["DHI-ITSJC-2303-DC12","-11.56%",7,3027.70,-349.86],
+    ["GRP2601P","-16.11%",23,2154.25,-347.00],
+    ["DS-2CD2087G3-LI2UY(2.8mm)(O-STD)","-9.08%",8,2999.52,-272.48],
+    ["GRP2602W","-23.22%",9,1088.73,-252.84],
+    ["IPMECD-0262-M40-LED","-20.97%",2,1140.80,-239.20],
+    ["UCM6302","-19.80%",1,870.95,-172.48],
+    ["DS-2XS2T41G1-ID/4G/C05S07(4mm)(O-STD)","-24.34%",1,668.25,-162.63],
+    ["UCM6301","-18.31%",1,658.48,-120.58],
+    ["DS-2CD2183G2-LI (T) (2.8mm).","-3.60%",12,3299.25,-118.62],
+    ["GWN7802P","-17.62%",1,618.50,-109.00],
+    ["DH-XVR5108HS-4KL-I3","-3.71%",8,2617.93,-97.25],
+    ["MP60UB DSPPA","-3.03%",7,2690.66,-81.46],
+    ["TP-EAP613","-1.42%",22,5214.00,-74.00],
+    ["DH-PFA152-E","-11.22%",23,608.00,-68.20],
+    ["GWN7801P","-17.79%",1,350.20,-62.30],
+    ["DHI-VTH2624GW-WP","-25.15%",1,244.50,-61.50],
+    ["DHI-IPMECD-2032-RM40-T20","-2.08%",2,2894.40,-60.30],
+    ["4U NETWORK CABINET 400x400 Layer9","-34.97%",1,91.13,-31.87],
+    ["DS-7616NXI-I2/16P/S(STD)(E)","-0.56%",4,5472.00,-30.50],
+    ["DS-QAE0215G1-V(O-STD)","-5.38%",11,429.00,-23.10],
+    ["ZK-F08 Mifare card","-13.42%",64,158.00,-21.20],
+    ["GRP2601","-23.40%",1,88.13,-20.62],
+    ["DH-IPC-HFW2849S-S-IL","-1.88%",3,933.75,-17.55],
+    ["DH-XVR5104HS-I3","-3.73%",3,451.44,-16.86],
+    ["DS-D5AC12T7-16S5(O-STD)","-0.02%",3,11439.00,-2.25],
+    ["Cable Ties 362x4.8mm (100Pcs)","-9.81%",1,9.38,-0.92],
+    ["DSP8064B DSPPA","-0.02%",2,317.26,-0.05],
+    ["DS-AE-DC8322-G2PRO(2CH)","0%",19,7482.96,-0.02],
+    ["GRP2612G","0%",10,1565.60,-0.02],
   ];
-  const top10 = data.slice(0,10);
-  const maxLoss = 17491.20;
-  const barsEl = document.getElementById('bars');
+
+  function fmt(n){ return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+  // ---- Views / navigation ----
+  const CRUMBS = {
+    home: [["الرئيسية / Home", 'goHome()']],
+    'dept-purchasing': [["الرئيسية / Home",'goHome()'],["المشتريات والمخزون والجرد",null]],
+    'report-profit-loss': [["الرئيسية / Home",'goHome()'],["المشتريات والمخزون والجرد",'goDept(\"purchasing\")'],["البيع بخسارة",null]],
+  };
+  function setCrumbs(key){
+    const el = document.getElementById('crumbs');
+    el.innerHTML = CRUMBS[key].map(([label,fn],i,arr)=>{
+      const isLast = i===arr.length-1;
+      const sep = i>0 ? '<span class="sep">/</span>' : '';
+      return sep + (isLast ? `<span class="now">${label}</span>` : `<button onclick="${fn}">${label}</button>`);
+    }).join('');
+  }
+  function showView(id, crumbKey){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    setCrumbs(crumbKey);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  function goHome(){ showView('view-home','home'); }
+  function goDept(key){ showView('view-dept-'+key, 'dept-'+key); }
+  function goReport(key){ showView('view-report-'+key, 'report-'+key); }
+
+  // ---- Time-window tabs ----
+  document.querySelectorAll('.win-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.win-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.win-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('win-'+btn.dataset.win).classList.add('active');
+    });
+  });
+
+  // ---- Bars (top 10) ----
+  const top10 = [...DATA30].sort((a,b)=>a[4]-b[4]).slice(0,10);
+  const maxLoss = Math.abs(top10[0][4]);
+  const barsEl = document.getElementById('bars-30');
   top10.forEach(it=>{
-    const loss = parseFloat(it[4].replace(/,/g,''));
-    const pct = Math.max(4, Math.abs(loss)/maxLoss*100);
+    const pct = Math.max(4, Math.abs(it[4])/maxLoss*100);
     const row = document.createElement('div');
     row.className='bar-row';
-    row.innerHTML = `<div class="name">${it[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><div class="val">${it[4]}</div>`;
+    row.innerHTML = `<div class="name">${it[0]}</div><div class="bar-track"><div class="bar-fill" style="width:0"></div></div><div class="val">${fmt(it[4])}</div>`;
     barsEl.appendChild(row);
+    requestAnimationFrame(()=> setTimeout(()=>{ row.querySelector('.bar-fill').style.width = pct+'%'; }, 60));
   });
-  const tbody = document.getElementById('table-body');
-  data.forEach(it=>{
-    const loss = parseFloat(it[4].replace(/,/g,''));
-    const cls = loss < -500 ? 'loss-hi' : (loss < -100 ? 'loss-mid' : '');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${it[0]}</td><td>${it[1]}</td><td class="num">${it[2]}</td><td class="num">${it[3]}</td><td class="num ${cls}">${it[4]}</td>`;
-    tbody.appendChild(tr);
+
+  // ---- Sortable / searchable / filterable table ----
+  let sortState = {key:'loss', dir:1};
+  let activeFilter = 'all';
+  let searchTerm = '';
+
+  function applyTable(){
+    let rows = DATA30.map(r=>({name:r[0],margin:r[1],qty:r[2],sales:r[3],loss:r[4]}));
+    if(searchTerm){
+      const s = searchTerm.toLowerCase();
+      rows = rows.filter(r=> r.name.toLowerCase().includes(s));
+    }
+    if(activeFilter==='high') rows = rows.filter(r=> r.loss < -500);
+    if(activeFilter==='mid') rows = rows.filter(r=> r.loss <= -100 && r.loss >= -500);
+
+    rows.sort((a,b)=>{
+      const k = sortState.key;
+      if(typeof a[k]==='string') return sortState.dir * a[k].localeCompare(b[k]);
+      return sortState.dir * (a[k]-b[k]);
+    });
+
+    const tbody = document.querySelector('#table-30 tbody');
+    tbody.innerHTML='';
+    rows.forEach(r=>{
+      const cls = r.loss < -500 ? 'loss-hi' : (r.loss <= -100 ? 'loss-mid' : '');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${r.name}</td><td>${r.margin}</td><td class="num">${r.qty}</td><td class="num">${fmt(r.sales)}</td><td class="num ${cls}">${fmt(r.loss)}</td>`;
+      tbody.appendChild(tr);
+    });
+    document.getElementById('row-count-30').textContent = rows.length + ' صف / rows';
+
+    document.querySelectorAll('#table-30 thead th').forEach(th=>{
+      th.classList.toggle('sorted', th.dataset.key===sortState.key);
+      const ic = th.querySelector('.sort-ic');
+      if(th.dataset.key===sortState.key) ic.textContent = sortState.dir===1 ? '↑' : '↓';
+      else ic.textContent = '↕';
+    });
+  }
+
+  document.querySelectorAll('#table-30 thead th').forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const key = th.dataset.key;
+      if(sortState.key===key) sortState.dir *= -1;
+      else { sortState.key = key; sortState.dir = th.dataset.type==='num' ? 1 : 1; }
+      applyTable();
+    });
   });
+  document.getElementById('search-30').addEventListener('input', e=>{ searchTerm = e.target.value; applyTable(); });
+  document.querySelectorAll('.filter-chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      activeFilter = chip.dataset.filter;
+      applyTable();
+    });
+  });
+
+  applyTable();
+  goHome();
 </script>
 </body>
 </html>
