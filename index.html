@@ -197,7 +197,7 @@
 
   table{width:100%;border-collapse:collapse;font-size:.83rem}
   th,td{padding:8px 10px;text-align:start;border-bottom:1px solid var(--border)}
-  thead th{background:var(--navy);color:#fff;font-weight:700;font-size:.75rem;position:sticky;top:0;cursor:pointer;user-select:none;white-space:nowrap}
+  thead th{background:var(--navy);color:#fff;font-weight:700;font-size:.75rem;position:sticky;top:64px;cursor:pointer;user-select:none;white-space:nowrap}
   thead th .en{display:block;font-size:.85em;font-weight:500;opacity:.75}
   thead th .sort-ic{opacity:.5;margin-inline-start:4px;font-size:.85em}
   thead th.sorted .sort-ic{opacity:1;color:var(--gold-bright)}
@@ -207,7 +207,7 @@
   td.num{text-align:left;font-variant-numeric:tabular-nums}
   td.loss-hi{background:var(--danger-bg);font-weight:700;color:var(--danger)}
   td.loss-mid{background:var(--warn-bg);font-weight:600}
-  .table-wrap{overflow-x:auto;max-height:560px;overflow-y:auto;border-radius:12px;border:1px solid var(--border)}
+  .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
 
   .note-honest{border-inline-start:4px solid var(--text-dim);background:var(--surface-2);border-radius:10px;padding:12px 16px;margin:10px 0;font-size:.82rem;color:var(--text-dim);font-style:italic}
   .note-honest .en{display:block;margin-top:3px;font-style:normal}
@@ -308,7 +308,7 @@
     <div class="win-tabs" id="win-tabs">
       <button class="win-tab active" data-win="d30">آخر 30 يوماً<span class="en">Last 30 days</span></button>
       <button class="win-tab" data-win="d7">آخر 7 أيام<span class="en">Last 7 days</span></button>
-      <button class="win-tab" data-win="d1">آخر يوم<span class="en">Last day</span></button>
+      <button class="win-tab" data-win="d1">آخر يوم كامل<span class="en">Last complete day</span></button>
     </div>
 
     <!-- ---- 30 DAY WINDOW ---- -->
@@ -418,14 +418,46 @@
       </div>
     </div>
 
-    <!-- ---- 1 DAY WINDOW ---- -->
+    <!-- ---- 1 DAY WINDOW (last COMPLETE day, not "today so far") ---- -->
     <div class="win-panel" id="win-d1">
       <div class="kpi-row">
-        <div class="kpi"><div class="label">أصناف بخسارة<span class="en">Loss items</span></div><div class="value" style="color:var(--ok)">0</div></div>
+        <div class="kpi"><div class="label">أصناف بخسارة<span class="en">Loss items</span></div><div class="value" id="kpi1-count">2</div></div>
+        <div class="kpi"><div class="label">إجمالي الخسارة<span class="en">Total loss</span></div><div class="value" id="kpi1-total">-109.67 ر.س</div></div>
+        <div class="kpi"><div class="label">وحدات مباعة بخسارة<span class="en">Units at loss</span></div><div class="value" id="kpi1-qty">4</div></div>
+        <div class="kpi"><div class="label">أكبر خسارة فردية<span class="en">Biggest single loss</span></div><div class="value" style="font-size:.88rem" id="kpi1-top">-108.75 ر.س (99%)</div></div>
       </div>
-      <div class="empty-state">
-        ✅ لا توجد معاملات بيع خلال يوم 07/09/2026 حتى لحظة التحديث — مؤكَّد من النظام مباشرة.
-        <span class="en">No sales transactions on 2026-09-07 as of this update — confirmed directly from the system.</span>
+      <p style="font-size:.8rem;color:var(--text-dim)">اليوم الكامل الأخير: 06/09/2026 · <span class="en">Last complete day: 2026-09-06</span></p>
+      <div class="note-honest">📌 "آخر يوم" يعني اليوم الكامل الأخير المنتهي (أمس)، لا اليوم الجاري — لأن اليوم الجاري يبدأ فارغاً كل صباح ولا يعكس أداءً حقيقياً.<span class="en">"Last day" means the last fully completed day (yesterday), not today-in-progress — today always starts empty each morning and wouldn't reflect real performance.</span></div>
+
+      <div class="card">
+        <h2>أصناف الخسارة<span class="en">Loss items</span></h2>
+        <div class="bars" id="bars-1"></div>
+      </div>
+
+      <div class="card">
+        <h2>الجدول الكامل — 2 صنف<span class="en">Full table — 2 items</span></h2>
+        <div class="table-toolbar">
+          <div class="search-box">
+            <input type="text" id="search-1" placeholder="ابحث عن صنف أو SKU... / Search item or SKU...">
+            <span class="ic">🔍</span>
+          </div>
+          <button class="filter-chip active" data-filter="all" data-scope="1">الكل · All</button>
+          <button class="filter-chip" data-filter="high" data-scope="1">خسارة كبيرة (&gt;500) · High</button>
+          <button class="filter-chip" data-filter="mid" data-scope="1">متوسطة (100-500) · Mid</button>
+          <span class="row-count" id="row-count-1">2 صف</span>
+        </div>
+        <div class="table-wrap">
+          <table id="table-1">
+            <thead><tr>
+              <th data-key="name" data-type="str">الصنف<span class="en">Item</span><span class="sort-ic">↕</span></th>
+              <th data-key="margin" data-type="num">الهامش<span class="en">Margin</span><span class="sort-ic">↕</span></th>
+              <th data-key="qty" data-type="num">الكمية<span class="en">Qty</span><span class="sort-ic">↕</span></th>
+              <th data-key="sales" data-type="num">إجمالي المبيعات<span class="en">Total Sales</span><span class="sort-ic">↕</span></th>
+              <th data-key="loss" data-type="num">الخسارة<span class="en">Loss</span><span class="sort-ic">↕</span></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -489,6 +521,12 @@
     ["RG-RAP2266","-0.19%",3,964.14,-1.86],
     ["Cable Ties 362x4.8mm (100Pcs)","-9.81%",1,9.38,-0.92],
     ["GRP2612G","0%",10,1565.60,-0.02],
+  ];
+
+  // Real Zoho Profit By Item data, last complete day: 06/09/2026
+  const DATA1 = [
+    ["GWN7660E","-18.13%",3,600.00,-108.75],
+    ["Cable Ties 362x4.8mm (100Pcs)","-9.81%",1,9.38,-0.92],
   ];
 
   function fmt(n){ return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -598,6 +636,7 @@
 
   initWindow('30', DATA30);
   initWindow('7', DATA7);
+  initWindow('1', DATA1);
   goHome();
 </script>
 </body>
