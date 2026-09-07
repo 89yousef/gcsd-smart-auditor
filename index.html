@@ -46,9 +46,15 @@
   .brand-mark{width:44px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--navy),var(--navy-ink));display:flex;align-items:center;justify-content:center;color:var(--gold-bright);font-family:'Cairo';font-weight:900;font-size:.62rem;letter-spacing:.02em;box-shadow:var(--shadow);flex-shrink:0}
   .brand-name{font-family:'Cairo';font-weight:800;font-size:1rem;line-height:1.2}
   .brand-name .sub{display:block;font-size:.68rem;font-weight:500;color:var(--text-dim)}
-  .crumbs{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--text-dim)}
-  .crumbs button{background:none;border:none;color:var(--text-dim);cursor:pointer;font-family:inherit;font-size:inherit;padding:2px 4px;border-radius:6px}
+  .crumbs{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--text-dim);overflow-x:auto;white-space:nowrap;max-width:52vw}
+  .crumbs button{background:none;border:none;color:var(--text-dim);cursor:pointer;font-family:inherit;font-size:inherit;padding:2px 4px;border-radius:6px;white-space:nowrap}
   .crumbs button:hover{background:var(--surface-2);color:var(--text)}
+  @media(max-width:640px){
+    .topbar-inner{flex-wrap:wrap;row-gap:8px}
+    .crumbs{order:3;max-width:100%;width:100%;justify-content:flex-start}
+    .brand-name{font-size:.9rem}
+    .brand-name .sub{font-size:.62rem}
+  }
   .crumbs .sep{opacity:.5}
   .crumbs .now{color:var(--gold);font-weight:700}
 
@@ -322,7 +328,7 @@
         <div class="kpi"><div class="label">وحدات مباعة بخسارة<span class="en">Units at loss</span></div><div class="value">761</div></div>
         <div class="kpi"><div class="label">أكبر خسارة فردية<span class="en">Biggest single loss</span></div><div class="value" style="font-size:.88rem">-17,491.20 ر.س (52.5%)</div></div>
       </div>
-      <p style="font-size:.8rem;color:var(--text-dim)">النطاق: 08/08/2026 → 07/09/2026 · <span class="en">Range: 2026-08-08 → 2026-09-07</span></p>
+      <p style="font-size:.8rem;color:var(--text-dim)">النطاق: <bdi>08/08/2026 → 07/09/2026</bdi> · <span class="en">Range: <bdi>2026-08-08 → 2026-09-07</bdi></span></p>
 
       <div class="card">
         <h2>أعلى 10 أصناف خسارة<span class="en">Top 10 loss items</span></h2>
@@ -387,7 +393,7 @@
         <div class="kpi"><div class="label">وحدات مباعة بخسارة<span class="en">Units at loss</span></div><div class="value" id="kpi7-qty">41</div></div>
         <div class="kpi"><div class="label">أكبر خسارة فردية<span class="en">Biggest single loss</span></div><div class="value" style="font-size:.88rem" id="kpi7-top">-651.25 ر.س (43%)</div></div>
       </div>
-      <p style="font-size:.8rem;color:var(--text-dim)">النطاق: 01/09/2026 → 07/09/2026 · <span class="en">Range: 2026-09-01 → 2026-09-07</span></p>
+      <p style="font-size:.8rem;color:var(--text-dim)">النطاق: <bdi>01/09/2026 → 07/09/2026</bdi> · <span class="en">Range: <bdi>2026-09-01 → 2026-09-07</bdi></span></p>
 
       <div class="card">
         <h2>أعلى أصناف خسارة<span class="en">Top loss items</span></h2>
@@ -429,7 +435,7 @@
         <div class="kpi"><div class="label">وحدات مباعة بخسارة<span class="en">Units at loss</span></div><div class="value" id="kpi1-qty">4</div></div>
         <div class="kpi"><div class="label">أكبر خسارة فردية<span class="en">Biggest single loss</span></div><div class="value" style="font-size:.88rem" id="kpi1-top">-108.75 ر.س (99%)</div></div>
       </div>
-      <p style="font-size:.8rem;color:var(--text-dim)">اليوم الكامل الأخير: 06/09/2026 · <span class="en">Last complete day: 2026-09-06</span></p>
+      <p style="font-size:.8rem;color:var(--text-dim)">اليوم الكامل الأخير: <bdi>06/09/2026</bdi> · <span class="en">Last complete day: <bdi>2026-09-06</bdi></span></p>
       <div class="note-honest">📌 "آخر يوم" يعني اليوم الكامل الأخير المنتهي (أمس)، لا اليوم الجاري — لأن اليوم الجاري يبدأ فارغاً كل صباح ولا يعكس أداءً حقيقياً.<span class="en">"Last day" means the last fully completed day (yesterday), not today-in-progress — today always starts empty each morning and wouldn't reflect real performance.</span></div>
 
       <div class="card">
